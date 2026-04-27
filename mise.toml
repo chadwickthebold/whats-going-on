@@ -1,4 +1,5 @@
 [tools]
 python = '3.12'
+poetry = '2.3.4'
 node = 'lts'
 sqlite = '3.53.0'
