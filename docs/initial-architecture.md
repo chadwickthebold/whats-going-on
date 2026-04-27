@@ -18,5 +18,8 @@ AWS for any infra
 	* Name
 * Event
 	* EventType
+	* Duration
+	* EventStart
+	* is_passed
 * EventType
 * EventTypeVenueMapping
