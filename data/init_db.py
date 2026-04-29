@@ -1,7 +1,7 @@
 from sqlalchemy import create_engine
 from db_models import Venue, Event
 
-DB_PATH = "/data/wgo.db"
+DB_PATH = "/wgo-local.db"
 DB_CONN_STR = "sqlite+pysqlite://" + DB_PATH
 
 """

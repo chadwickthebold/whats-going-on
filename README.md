@@ -11,7 +11,7 @@ A simple service to track upcoming events in NYC
 
 To facilitate local development several helpful commands are available via `make`
 
-* `make local` - Run required project setup
+* `make init` - Set up local environment to prepare for development
 * `make lint`
 * `make test`
 * `make start`

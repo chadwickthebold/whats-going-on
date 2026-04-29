@@ -26,24 +26,28 @@ with the service and initiating workflows.
 An event is our core model. An event has a title, a description, and occurs at a specific time and for a specific duration.
 
 **Attributes**
-* EventType
-* Duration
-* EventStart
-* is_passed
+* title
+* short_description
+* event_type (string: exhibition, performance, talk, screening, other)
+* event_start_timestamp (datetime with timezone)
+* duration_minutes (int)
+* is_passed (bool)
+* venue_id (FK → Venue)
 
 ### Venue
-A Venue is where an event takes place
+A Venue is where an event takes place.
 
 **Attributes**
-* Name
-* Address
-* Organization
+* name
+* address
+* website
+* organization_id (FK → Organization)
 
 ### Organization
-An organization can own multiple venues
+An organization can own multiple venues.
 
 **Attributes**
-* Name
+* name
 
 ### Data Source
 A data source is a source of information for event info. It represents a discrete feed of information such
@@ -52,14 +56,17 @@ as a calendar webpage, an rss feed, or a mailing list.
 We'll start by modeling the types we encounter as we onboard new venues, and determine how to make this more
 generic or specific in the future
 
+A Data Source can be mapped either to a venue or an organization
+
 **Attributes**
-* URL
-* Expected Update Cadence
-* last_checked
+* url
+* last_checked (datetime)
+* venue_id (FK → Venue, nullable)
+* organization_id (FK → Organization, nullable)
 
 A data source is the core unit of work we process for our event extraction workflow.
 
-## Worklow
+## Workflow
 Data Refresh should be idempotent, pulling multiple times shouldn't result in duplicate data
 
 1. Pull venue data from DB
@@ -79,6 +86,14 @@ Refresh workflow
 2. Use beautiful soup to extract events
 3. Normalize found events to data model
 4. Record in DB
+
+## Data Management
+
+Track long-live production data in a sqlite object wgo-prod.db
+
+For local development we should be able to both start a db from scratch with the
+most current schema from production, as well as copy data over from production
+to test how future migrations will work.
 
 ## Future Ideas
 * Retain a log of data refresh workflow runs for later debugging

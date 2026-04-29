@@ -18,7 +18,14 @@ patterns introduced, changes to library utlization, and other major architectura
 
 ## v0.1
 
+Create initial database scaffolding. Use sqlalchemy to create class definitions for our core models.
+Use these models to create a local migration script that can initialze an empty database with the schema
+required from our configured sqlalchemy models.
 
+**Definition of Done**
+* sqlalchemy models defined in data/db_models.py that match models outlined in project architecture
+* Running `make empty-db` causes a new db wgo-local.db to be created in the `/data` dir with the 
+schema required to support the defined sqlalchemy models
 
 ## v1.0
 
