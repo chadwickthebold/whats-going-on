@@ -1,14 +1,12 @@
+from pathlib import Path
+
 from sqlalchemy import create_engine
-from db_models import Venue, Event
 
-DB_PATH = "/wgo-local.db"
-DB_CONN_STR = "sqlite+pysqlite://" + DB_PATH
+from db_models import Base, Organization, Venue, Event, DataSource
 
-"""
-Create a new create_engine and have it log out
-all of the table creation statement from the configured
-models.
-"""
+DB_PATH = Path(__file__).parent / "wgo.local.db"
+DB_CONN_STR = f"sqlite+pysqlite:///{DB_PATH}"
+
 engine = create_engine(DB_CONN_STR, echo=True)
 
-Venue.metadata.create_all(engine)
+Base.metadata.create_all(engine)
