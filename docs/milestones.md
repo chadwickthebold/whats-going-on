@@ -20,8 +20,6 @@ patterns introduced, changes to library utlization, and other major architectura
 
 ## v0.1
 
-**COMPLETE**
-
 Create initial database scaffolding. Use sqlalchemy to create class definitions for our core models.
 Use these models to create a local migration script that can initialze an empty database with the schema
 required from our configured sqlalchemy models.
