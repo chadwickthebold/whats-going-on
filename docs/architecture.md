@@ -13,12 +13,43 @@ AWS for any infra (most likely won't be any)
 
 ## System Design
 
-Data will be persisted in a sqlite DB
+```
+  ┌─────────────────────────────────────────────────────────────┐
+  │                        Web Client                           │
+  │                      (React / Next.js)                      │
+  └────────────────────────────┬────────────────────────────────┘
+                               │ HTTP
+                               ▼
+  ┌─────────────────────────────────────────────────────────────┐
+  │                      FastAPI Server                         │
+  │                                                             │
+  │  ┌──────────────────┐    ┌───────────────────────────────┐  │
+  │  │   Events API     │    │     Refresh Orchestrator      │  │
+  │  │  (read / filter) │    │    (dispatched per venue)     │  │
+  │  └────────┬─────────┘    └──────────────┬────────────────┘  │
+  │           │                             │                   │
+  │           │              ┌──────────────▼──────────────┐    │
+  │           │              │  1. Fetcher                 │    │
+  │           │              │     (HTTP GET data source)  ├────┼──► Venue Sites
+  │           │              │                             │    │    (HTML / RSS)
+  │           │              │  2. Venue Parser            │    │
+  │           │              │     (BS4 / lxml)            │    │
+  │           │              │                             │    │
+  │           │              │  3. Reconciler              │    │
+  │           │              │     (dedup + insert)        │    │
+  │           │              └──────────────┬──────────────┘    │
+  └───────────┼─────────────────────────────┼───────────────────┘
+              │                             │
+              ▼                             ▼
+  ┌─────────────────────────────────────────────────────────────┐
+  │                   SQLite (wgo.prod.db)                      │
+  │        Organization → Venue → Event                         │
+  │                   └─── DataSource                           │
+  └─────────────────────────────────────────────────────────────┘
+```
 
-Tasks can be dispatched in forked processes for the event processing workflow
-
-An HTTP interface will be provided for a web application to provide a UI for interacting
-with the service and initiating workflows.
+**Note** we're not initializing wgo.prod.db until we're more certain the data model
+is locked - I don't want to deal with migrations until we're at v1.0
 
 ## Models
 
@@ -99,3 +130,4 @@ to test how future migrations will work.
 * Retain a log of data refresh workflow runs for later debugging
 * Calendar sync
 * Remote (non-local) access
+* Dispatch workflow processes asyncronously from the main server process

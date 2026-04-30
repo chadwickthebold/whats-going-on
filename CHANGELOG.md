@@ -5,6 +5,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.0] - 2026-04-29
+
+### Added
+
+- `DrawingCenterParser` in `parser/drawing_center.py` — parses `#onview` and `#upcoming` exhibit sections from Drawing Center HTML, returning candidate `Event` objects
+- `HTMLParser` base class in `parser/parser.py` with abstract `parse(file_path) -> list[Event]` interface and `_load()` helper
+- Slug-based parser dispatch in `refresh.py` via `PARSERS` dict
+- Fetcher step in `refresh.py` — fetches data source URL and saves HTML to `tmp/<venue-slug>.html` before parsing
+- Reconciler step in `refresh.py` — deduplicates events by title against existing DB records and inserts new events
+- System diagram added to `docs/architecture.md`
+- v0.2 and v1.0 milestones defined in `docs/milestones.md`
+
+### Changed
+
+- `Organization`, `DataSource` models added to `data/db_models.py`; `Venue` and `Event` models completed with all attributes and relationships
+- `data/init_db.py` updated to import all four models and use a path relative to the script location
+- Architecture doc models section updated to reflect concrete column names and types
+
 ## [0.1.0] - 2026-04-28
 
 ### Added
