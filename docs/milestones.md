@@ -35,8 +35,31 @@ schema required to support the defined sqlalchemy models
 
 ## v0.2
 
-Create a basic version of a refresh process that operates on a sample venue. This process should query the
-data source associated with the venue, parse the result, normalize into our event model, and print the results
+Create a working end-to-end refresh pipeline for a single venue (The Drawing Center). This milestone proves
+out the full Fetcher → Parser → Reconciler flow and results in real events written to the local database.
+
+Introduces venue-specific parser modules under `parser/`, porting the existing `scrape_drawingcenter.py`
+proof-of-concept into a structured `DrawingCenterParser` class. Seed data for the venue and its data source
+URL must exist in the DB for the workflow to run.
+
+**Definition of Done**
+* `DrawingCenterParser` implemented in `parser/` and extracts events from Drawing Center HTML
+* `refresh.py` dispatches to the correct parser based on venue and writes new events to the DB
+* Seed data script populates Drawing Center venue and data source
+* Running `python refresh.py drawing-center` results in events inserted into `wgo.local.db` with no duplicates on subsequent runs
 
 ## v1.0
+
+First fully working product with a UI. Introduces the FastAPI server layer and a React/Next.js web client.
+Users can browse upcoming events through the web UI and trigger a data refresh via the server.
+
+The server exposes the Events API (read/filter) and a refresh endpoint that invokes the orchestrator.
+The web client consumes these endpoints to display events, filterable by venue or event type.
+Refresh is triggered on a venue-basis.
+
+**Definition of Done**
+* FastAPI server runs locally and exposes endpoints for listing events and triggering a venue refresh
+* React/Next.js web client displays a list of upcoming events fetched from the server
+* Events can be filtered by venue and/or event type in the UI
+* Refresh can be triggered from the UI and reflects new events without a page reload
 
