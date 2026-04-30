@@ -16,6 +16,10 @@ patterns introduced, changes to library utlization, and other major architectura
 
 **Definition of Done**
 (Bullet point list of acceptance criteria for milestone)
+
+**TODO**
+- [ ] Item 1
+- [ ] Item 2
 ```
 
 ## v0.1
@@ -31,7 +35,8 @@ schema required to support the defined sqlalchemy models
 
 ## v0.2
 
-
+Create a basic version of a refresh process that operates on a sample venue. This process should query the
+data source associated with the venue, parse the result, normalize into our event model, and print the results.
 
 ## v1.0
 

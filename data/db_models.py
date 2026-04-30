@@ -42,6 +42,7 @@ class Venue(Base):
     __tablename__ = 'venue'
 
     name: Mapped[str] = mapped_column(index=True, nullable=False)
+    slug: Mapped[str] = mapped_column(nullable=False)
     address: Mapped[str] = mapped_column(nullable=True)
     website: Mapped[str] = mapped_column(nullable=True)
     organization_id: Mapped[int] = mapped_column(ForeignKey("organization.id"), nullable=True)
