@@ -29,5 +29,9 @@ required from our configured sqlalchemy models.
 * Running `make empty-db` causes a new db wgo.local.db to be created in the `/data` dir with the 
 schema required to support the defined sqlalchemy models
 
+## v0.2
+
+
+
 ## v1.0
 

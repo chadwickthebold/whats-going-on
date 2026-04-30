@@ -89,7 +89,7 @@ Refresh workflow
 
 ## Data Management
 
-Track long-live production data in a sqlite object wgo-prod.db
+Track long-live production data in a sqlite object wgo.prod.db
 
 For local development we should be able to both start a db from scratch with the
 most current schema from production, as well as copy data over from production
