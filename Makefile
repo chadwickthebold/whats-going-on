@@ -1,4 +1,9 @@
-.PHONY: empty-db
+.PHONY: empty-db dev
+
+dev:
+	poetry run uvicorn server:app --reload
+
+
 
 empty-db: data/wgo.local.db
 

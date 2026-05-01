@@ -1,6 +1,6 @@
 from datetime import datetime, UTC
 
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
 from data.db_models import DataSource, Event, Venue
@@ -27,6 +27,16 @@ class EventRepository:
             )
         }
 
+    def find_all(self, offset: int = 0, limit: int = 20) -> list[Event]:
+        return list(self.session.execute(
+            select(Event).offset(offset).limit(limit)
+        ).scalars())
+
+    def count(self) -> int:
+        return self.session.execute(
+            select(func.count()).select_from(Event)
+        ).scalar_one()
+
     def save(self, event: Event) -> None:
         self.session.add(event)
 
@@ -39,6 +49,16 @@ class VenueRepository:
         return self.session.execute(
             select(Venue).where(Venue.slug == slug)
         ).scalar_one_or_none()
+
+    def find_all(self, offset: int = 0, limit: int = 20) -> list[Venue]:
+        return list(self.session.execute(
+            select(Venue).offset(offset).limit(limit)
+        ).scalars())
+
+    def count(self) -> int:
+        return self.session.execute(
+            select(func.count()).select_from(Venue)
+        ).scalar_one()
 
 
 class DataSourceRepository:

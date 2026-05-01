@@ -62,6 +62,20 @@ Implements these patterns in code: engine construction moves to `data/database.p
 * `Event` ORM model has `source_url` column; `is_passed` field removed
 * `python refresh.py drawing-center` inserts events on first run and 0 events on subsequent runs
 
+## v0.4
+
+Introduces the FastAPI server layer with two read endpoints and automatic Swagger documentation. The server exposes a paginated `GET /venues` and `GET /events` endpoint, both returning a consistent envelope with `total`, `limit`, `offset`, and `items`. This milestone proves out the full data path from SQLite through the repository layer to a JSON HTTP response, and establishes the `schemas.py` Pydantic layer called for in the data management ADR.
+
+Adds `find_all(offset, limit)` and `count()` methods to `EventRepository` and `VenueRepository`. Introduces `server.py` as the FastAPI entry point with per-request session injection via `Depends(get_db)`. Swagger UI is available at `/docs` with no additional configuration.
+
+**Definition of Done**
+* `GET /venues` returns a paginated list of venues with `total`, `limit`, `offset`, and `items`
+* `GET /events` returns a paginated list of events with the same envelope
+* Both endpoints accept `offset` and `limit` query parameters
+* `schemas.py` defines `PaginatedResponse[T]`, `VenueResponse`, and `EventResponse` as Pydantic models
+* Swagger UI loads at `http://localhost:8000/docs`
+* `make dev` starts the server with hot reload
+
 ## v1.0
 
 First fully working product with a UI. Introduces the FastAPI server layer and a React/Next.js web client.
