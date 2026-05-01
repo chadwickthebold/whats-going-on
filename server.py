@@ -5,7 +5,7 @@ from data.database import engine
 from data.repositories import EventRepository, VenueRepository
 from schemas import EventResponse, PaginatedResponse, VenueResponse
 
-app = FastAPI(title="What's Going On", version="0.4.0")
+app = FastAPI(title="What's Going On", version="0.4.1")
 
 
 def get_db():

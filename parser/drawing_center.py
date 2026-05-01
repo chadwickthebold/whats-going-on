@@ -1,5 +1,5 @@
 from datetime import datetime
-from email.utils import parsedate_to_datetime
+from urllib.parse import urljoin
 
 from bs4 import Tag
 
@@ -35,10 +35,14 @@ class DrawingCenterParser(HTMLParser):
 
         title = title_tag.get_text(strip=True)
 
+        link_tag = title_tag.find("a")
+        source_url: str | None = None
+        if self.base_url and link_tag and link_tag.get("href"):
+            source_url = urljoin(self.base_url, str(link_tag["href"]))
+
         time_tag = exhibit.find("time")
-        ## TODO need to add an end datetime field in our model, to identify events 
+        ## TODO need to add an end datetime field in our model, to identify events
         ## we learned about when they were ongoing
-        ## TODO add an optional url field to our event model to 
         ## TODO extract a reference image to be used for display in the UI
         event_start_timestamp: datetime | None = None
         if is_upcoming and time_tag and time_tag.get("datetime"):
@@ -48,6 +52,7 @@ class DrawingCenterParser(HTMLParser):
             title=title,
             event_type=EventType.exhibition,
             event_start_timestamp=event_start_timestamp,
+            source_url=source_url,
         )
 
 def _parse_js_date(date_str: str) -> datetime:

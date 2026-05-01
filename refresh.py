@@ -1,5 +1,6 @@
 import argparse
 import urllib.request
+from datetime import datetime, UTC
 from pathlib import Path
 
 from sqlalchemy.orm import Session
@@ -55,11 +56,12 @@ if __name__ == '__main__':
         for source in sources:
             print(f"Processing data source: {source.url}")
 
-            tmp_file = TMP_DIR / f"{venue_target}.html"
+            timestamp = datetime.now(UTC).strftime("%Y%m%d_%H%M%S")
+            tmp_file = TMP_DIR / f"{venue_target}-{timestamp}.html"
             with urllib.request.urlopen(source.url) as response:
                 tmp_file.write_bytes(response.read())
 
-            parsed_events = parser_class().parse(str(tmp_file))
+            parsed_events = parser_class(base_url=venue.website).parse(str(tmp_file))
 
             existing_titles = event_repo.titles_for_venue(venue.id)
             new_events = [e for e in parsed_events if e.title not in existing_titles]
