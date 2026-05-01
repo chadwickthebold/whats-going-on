@@ -38,7 +38,7 @@ class DrawingCenterParser(HTMLParser):
         time_tag = exhibit.find("time")
         ## TODO need to add an end datetime field in our model, to identify events 
         ## we learned about when they were ongoing
-        ## TODO add a url field to our event model
+        ## TODO add an optional url field to our event model to 
         ## TODO extract a reference image to be used for display in the UI
         event_start_timestamp: datetime | None = None
         if is_upcoming and time_tag and time_tag.get("datetime"):
@@ -51,10 +51,13 @@ class DrawingCenterParser(HTMLParser):
             is_passed=False,
         )
 
-## TODO figure out why we need to do this
 def _parse_js_date(date_str: str) -> datetime:
-    # JS Date.toString() format: "Fri Jun 26 2026 00:00:00 GMT-0400"
-    # Strip the named timezone suffix if present (e.g. "(Eastern Daylight Time)")
+    """
+    The Drawing Center sets `datetime` attributes using JS Date.toString(), which produces
+    "Fri Jun 26 2026 00:00:00 GMT-0400" rather than an ISO 8601 string. Some environments
+    also append a named timezone in parens (e.g. "(Eastern Daylight Time)") which strptime
+    rejects, so we strip it before parsing.
+    """
     if "(" in date_str:
         date_str = date_str[:date_str.index("(")].strip()
     return datetime.strptime(date_str, "%a %b %d %Y %H:%M:%S GMT%z")

@@ -2,3 +2,4 @@
 **/__pycache__/
 /data/wgo.local.db
 tmp/
+.claude/agent-memory/
