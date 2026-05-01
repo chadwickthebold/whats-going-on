@@ -48,7 +48,6 @@ class DrawingCenterParser(HTMLParser):
             title=title,
             event_type=EventType.exhibition,
             event_start_timestamp=event_start_timestamp,
-            is_passed=False,
         )
 
 def _parse_js_date(date_str: str) -> datetime:

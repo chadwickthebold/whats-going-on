@@ -60,7 +60,7 @@ class Event(Base):
     event_type: Mapped[str] = mapped_column(nullable=True)
     event_start_timestamp: Mapped[datetime.datetime] = mapped_column(nullable=True)
     duration_minutes: Mapped[int] = mapped_column(nullable=True)
-    is_passed: Mapped[bool] = mapped_column(default=False)
+    source_url: Mapped[str] = mapped_column(nullable=True)
     venue_id: Mapped[int] = mapped_column(ForeignKey("venue.id"), nullable=True)
 
     venue: Mapped["Venue"] = relationship(back_populates="events")

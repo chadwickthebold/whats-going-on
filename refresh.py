@@ -1,14 +1,15 @@
 import argparse
 import urllib.request
 from pathlib import Path
-from data.db_models import Venue, Event
-from parser.drawing_center import DrawingCenterParser
-from sqlalchemy import create_engine, select
+
 from sqlalchemy.orm import Session
 
-TMP_DIR = Path(__file__).parent / "tmp"
+from data.database import engine
+from data.db_models import Event
+from data.repositories import DataSourceRepository, EventRepository, VenueRepository
+from parser.drawing_center import DrawingCenterParser
 
-DB_CONN_STR = "sqlite+pysqlite:///data/wgo.local.db"
+TMP_DIR = Path(__file__).parent / "tmp"
 
 PARSERS = {
     "drawing-center": DrawingCenterParser,
@@ -16,8 +17,6 @@ PARSERS = {
 
 arg_parser = argparse.ArgumentParser()
 arg_parser.add_argument("venue", help="venue slug for refresh")
-
-engine = create_engine(DB_CONN_STR, echo=True)
 
 """
 Script to manage workflow of refreshing content from a provided datasource
@@ -38,18 +37,22 @@ if __name__ == '__main__':
         exit(1)
 
     with Session(engine) as session:
-        venue = session.execute(select(Venue).where(Venue.slug == venue_target)).scalar_one_or_none()
+        venue_repo = VenueRepository(session)
+        event_repo = EventRepository(session)
+        source_repo = DataSourceRepository(session)
+
+        venue = venue_repo.find_by_slug(venue_target)
         if venue is None:
             print(f"No venue found with slug: [{venue_target}]")
             exit(1)
 
-        data_sources = venue.data_sources
-        print(f"Found {len(data_sources)} data source(s) for venue: [{venue.name}]")
+        sources = source_repo.find_by_venue(venue.id)
+        print(f"Found {len(sources)} data source(s) for venue: [{venue.name}]")
 
         TMP_DIR.mkdir(exist_ok=True)
 
-        new_events = []
-        for source in data_sources:
+        total_new = 0
+        for source in sources:
             print(f"Processing data source: {source.url}")
 
             tmp_file = TMP_DIR / f"{venue_target}.html"
@@ -58,15 +61,14 @@ if __name__ == '__main__':
 
             parsed_events = parser_class().parse(str(tmp_file))
 
-            existing_titles = {
-                row[0] for row in session.execute(
-                    select(Event.title).where(Event.venue_id == venue.id)
-                )
-            }
+            existing_titles = event_repo.titles_for_venue(venue.id)
             new_events = [e for e in parsed_events if e.title not in existing_titles]
             for event in new_events:
                 event.venue_id = venue.id
-                session.add(event)
+                event_repo.save(event)
+
+            source_repo.mark_checked(source)
+            total_new += len(new_events)
 
         session.commit()
-        print(f"Inserted {len(new_events)} new event(s)")
+        print(f"Inserted {total_new} new event(s)")

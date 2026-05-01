@@ -48,6 +48,20 @@ URL must exist in the DB for the workflow to run.
 * Seed data script populates Drawing Center venue and data source
 * Running `python refresh.py drawing-center` results in events inserted into `wgo.local.db` with no duplicates on subsequent runs
 
+## v0.3
+
+Establish data management patterns and refactor the refresh pipeline to follow them. Introduces an Architecture Decision Record (ADR) at `docs/data-management/data-management-patterns.md` that defines three conventions: Pydantic schemas as the shared intermediate layer between parsers and persistence, a repository pattern for all DB access, and a clear session lifecycle where the caller owns the transaction boundary.
+
+Implements these patterns in code: engine construction moves to `data/database.py`; `data/repositories.py` introduces `EventRepository`, `VenueRepository`, and `DataSourceRepository`; `refresh.py` is refactored to use repositories with a single commit at the end covering all writes for a run. The `Event` model gains a `source_url` column (the dedup key once parsers supply it) and drops `is_passed`, which is now derived at query time from `event_start_timestamp`.
+
+**Definition of Done**
+* ADR written at `docs/data-management/data-management-patterns.md` covering Pydantic schemas, repository pattern, and session lifecycle
+* `data/database.py` exports the SQLAlchemy engine
+* `data/repositories.py` implements `EventRepository`, `VenueRepository`, and `DataSourceRepository` with no inline queries; repositories do not call `session.commit()`
+* `refresh.py` uses repositories exclusively; session commit is a single call after all writes complete
+* `Event` ORM model has `source_url` column; `is_passed` field removed
+* `python refresh.py drawing-center` inserts events on first run and 0 events on subsequent runs
+
 ## v1.0
 
 First fully working product with a UI. Introduces the FastAPI server layer and a React/Next.js web client.

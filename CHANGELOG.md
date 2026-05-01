@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.0] - 2026-04-30
+
+### Added
+
+- `data/database.py` — central engine construction, imported by `refresh.py` and future FastAPI server
+- `data/repositories.py` — `EventRepository`, `VenueRepository`, and `DataSourceRepository`; all SQLAlchemy queries now live here; repositories do not call `session.commit()`
+- `docs/data-management/data-management-patterns.md` — ADR establishing Pydantic schemas as the shared intermediate layer, repository pattern for DB access, and session lifecycle conventions
+
+### Changed
+
+- `refresh.py` refactored to use repositories exclusively; single `session.commit()` at end of run covers all writes including `DataSource.last_checked`
+- `Event` model gains `source_url` column for stable dedup once parsers supply it; `is_passed` field removed (derived at query time from `event_start_timestamp`)
+- `DrawingCenterParser` updated to remove `is_passed` from constructed `Event` objects
+
 ## [0.2.0] - 2026-04-29
 
 ### Added
