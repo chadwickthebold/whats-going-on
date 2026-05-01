@@ -3,8 +3,6 @@
 dev:
 	poetry run uvicorn server:app --reload
 
-
-
 empty-db: data/wgo.local.db
 
 data/wgo.local.db:
