@@ -76,6 +76,18 @@ Adds `find_all(offset, limit)` and `count()` methods to `EventRepository` and `V
 * Swagger UI loads at `http://localhost:8000/docs`
 * `make dev` starts the server with hot reload
 
+## v0.5
+
+Bootstraps the Next.js frontend stack. Introduces a `web/` directory containing a Next.js 16 app (App Router, TypeScript, Tailwind CSS) served alongside the existing FastAPI backend. Proves out the full browser-to-API data path: the `/events` page fetches from `GET /events` and renders a list of event cards with title, type badge, formatted date, and source link. A welcome page at `/` links through to `/events`. CORS middleware is added to the FastAPI server to allow requests from the Next.js dev server.
+
+**Definition of Done**
+* `web/` directory initialized with Next.js 16, TypeScript, and Tailwind CSS
+* `GET /events` is called from the browser and events are rendered at `/events`
+* Event cards display title, event type badge, formatted date, and source link
+* Root `/` displays a welcome message with a link to `/events`
+* `make web-dev` starts the Next.js dev server
+* No CORS errors when the frontend calls the FastAPI backend
+
 ## v1.0
 
 First fully working product with a UI. Introduces the FastAPI server layer and a React/Next.js web client.

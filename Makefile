@@ -1,4 +1,4 @@
-.PHONY: empty-db dev
+.PHONY: empty-db dev web-dev
 
 dev:
 	poetry run uvicorn server:app --reload
@@ -10,3 +10,6 @@ data/wgo.local.db:
 
 seed-local-data:
 	sqlite3 data/wgo.local.db < data/seed_data.sql
+
+web-dev:
+	cd web && npm run dev

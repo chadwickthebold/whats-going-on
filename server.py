@@ -1,4 +1,5 @@
 from fastapi import Depends, FastAPI, Query
+from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 
 from data.database import engine
@@ -6,6 +7,13 @@ from data.repositories import EventRepository, VenueRepository
 from schemas import EventResponse, PaginatedResponse, VenueResponse
 
 app = FastAPI(title="What's Going On", version="0.4.1")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 def get_db():

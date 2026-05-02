@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.5.0] - 2026-05-01
+
+### Added
+
+- `web/` — Next.js 16 app (App Router, TypeScript, Tailwind CSS) initialized at `whats-going-on/web/`
+- `web/app/page.tsx` — welcome page with link to `/events`
+- `web/app/events/page.tsx` — events listing page; fetches from `GET /events` and renders a card per event
+- `web/components/EventCard.tsx` — displays event title, type badge, formatted date, and source link
+- `web/lib/types.ts` — TypeScript types for `EventResponse` and `PaginatedResponse<T>`
+- `web/lib/api.ts` — `fetchEvents()` wrapper using plain `fetch`
+- `web/lib/event-types.ts` — label and Tailwind badge color map for the five event types
+- `web/.env.local` — `NEXT_PUBLIC_API_URL` pointing to the local FastAPI server
+- `make web-dev` Makefile target — starts the Next.js dev server
+- CORS middleware added to `server.py` — allows requests from `http://localhost:3000`
+
 ## [0.4.1] - 2026-04-30
 
 ### Changed
