@@ -1,5 +1,5 @@
 .mise.local.toml
 **/__pycache__/
-/data/wgo.local.db
+/wgo-server/data/wgo.local.db
 tmp/
 .claude/agent-memory/

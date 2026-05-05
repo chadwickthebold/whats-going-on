@@ -182,13 +182,13 @@ Tailwind CSS is the only styling mechanism. No custom CSS files will be added fo
 
 ## 9. Project Structure
 
-**Recommendation: Sibling directory to the FastAPI backend**
+**Two sibling component directories**
 
-The Next.js app lives at `web/` as a sibling to the backend Python files in the project root, within the same git repository.
+The Next.js app lives at `wgo-web-client/` alongside the Python server at `wgo-server/`, within the same git repository.
 
 ```
 whats-going-on/
-├── web/                        ← Next.js application root
+├── wgo-web-client/             ← Next.js application root
 │   ├── app/
 │   │   ├── layout.tsx          ← RootLayout
 │   │   ├── page.tsx            ← EventsPage (server component shell)
@@ -212,29 +212,29 @@ whats-going-on/
 │   ├── package.json
 │   ├── postcss.config.js
 │   └── tailwind.config.js
-├── server.py                   ← FastAPI entry point
-├── schemas.py
-├── data/
-├── parser/
+├── wgo-server/                 ← FastAPI server and data pipeline
+│   ├── server.py               ← FastAPI entry point
+│   ├── schemas.py
+│   ├── data/
+│   ├── parser/
+│   └── references/
 ├── docs/
 ├── Makefile
 └── pyproject.toml
 ```
 
-**Why sibling directory, not a separate repo or monorepo root:**
+**Why sibling directories, not a separate repo or monorepo root:**
 
 - Same git repository keeps frontend and backend changes in the same commit, which is appropriate for a personal tool where both sides evolve together
 - A separate repo would add overhead (two `git pull`s, two separate issues lists) with no real benefit at this scale
 - A monorepo tool (Turborepo, Nx) is overkill — there are no shared packages between Python and JavaScript, so "monorepo" here just means "two directories in one repo"
-- The Python tooling (`poetry`, `mise`) is not affected by adding a `web/` subdirectory
+- The Python tooling (`poetry`, `mise`) remains at the project root unaffected
 
 **Makefile integration:**
 
-Add a `web-dev` target to the Makefile:
-
 ```makefile
 web-dev:
-    cd web && npm run dev
+    cd wgo-web-client && npm run dev
 ```
 
 This keeps the same ergonomics as `make dev` for the backend.

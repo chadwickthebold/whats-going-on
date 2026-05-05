@@ -1,15 +1,15 @@
 .PHONY: empty-db dev web-dev
 
 dev:
-	poetry run uvicorn server:app --reload
+	cd wgo-server && poetry run uvicorn server:app --reload
 
-empty-db: data/wgo.local.db
+empty-db: wgo-server/data/wgo.local.db
 
-data/wgo.local.db:
-	poetry run python data/init_db.py
+wgo-server/data/wgo.local.db:
+	cd wgo-server && poetry run python data/init_db.py
 
 seed-local-data:
-	sqlite3 data/wgo.local.db < data/seed_data.sql
+	sqlite3 wgo-server/data/wgo.local.db < wgo-server/data/seed_data.sql
 
 web-dev:
-	cd web && npm run dev
+	cd wgo-web-client && npm run dev
